@@ -1,0 +1,60 @@
+The error indicates that in your Gradle version catalog (likely defined in libs.versions.toml or a similar file), the from method is being called multiple times, which is not allowed. In a Gradle version catalog, you can only use the from method once to specify an external catalog source (e.g., another TOML file or dependency).
+
+Based on the provided catalog definition, it seems you're defining versions, libraries, and plugins correctly in a single catalog file. However, the error suggests that somewhere in your project, there might be multiple from calls, possibly in the settings.gradle file or another part of the catalog configuration.
+
+Steps to Resolve
+Check for Multiple from Calls:
+Open your settings.gradle or settings.gradle.kts file.
+
+Look for the dependencyResolutionManagement block. Ensure there’s only one from call in the version catalog declaration. For example:
+
+kotlin
+
+Копировать
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            from(files("gradle/libs.versions.toml")) // Only one 'from' call allowed
+        }
+    }
+}
+If you see multiple from calls (e.g., trying to include multiple TOML files or catalogs), consolidate them into a single catalog or remove the duplicates.
+
+Verify the Catalog File:
+Your provided catalog definition (in libs.versions.toml or similar) looks valid. It defines versions, libraries, and plugins correctly. Ensure there are no accidental from declarations within the TOML file itself, as from is not used in the TOML file directly.
+
+Example of a valid libs.versions.toml:
+
+toml
+
+Копировать
+[versions]
+kotlin = "1.9.22"
+androidGradlePlugin = "8.2.0"
+core-ktx = "1.12.0"
+appcompat = "1.6.1"
+material = "1.11.0"
+constraintlayout = "2.1.4"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+android-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+Check for External Catalog Imports:
+If you’re importing an external catalog (e.g., another TOML file or a published catalog), ensure it’s only referenced once. For example, if you’re using a catalog from a dependency like com.example:catalog:1.0, it should be declared only once:
+
+kotlin
+
+Копировать
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            from("com.example:catalog:1.0") // Only one 'from' here
+        }
+    }
+}

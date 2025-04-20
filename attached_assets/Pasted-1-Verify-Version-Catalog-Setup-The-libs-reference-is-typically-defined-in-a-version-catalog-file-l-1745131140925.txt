@@ -1,0 +1,77 @@
+1. Verify Version Catalog Setup
+The libs reference is typically defined in a version catalog file (libs.versions.toml) in the gradle directory. Check if this file exists and is correctly configured.
+
+Locate libs.versions.toml:
+Look in <project_root>/gradle/libs.versions.toml.
+If it doesn't exist, create it with this basic structure:
+toml
+
+Копировать
+[versions]
+# Example versions
+kotlin = "1.9.22"
+androidGradlePlugin = "8.5.0"
+
+[libraries]
+# Example library
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+
+[plugins]
+# Example plugin
+android = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+Replace versions and dependencies with those relevant to your project.
+Ensure Gradle Sync:
+After creating or editing libs.versions.toml, sync the project:
+Go to File > Sync Project with Gradle Files or click the sync icon (elephant with refresh arrow).
+This makes the libs reference available in build.gradle.kts.
+2. Check build.gradle.kts Usage
+Ensure you're using the libs reference correctly in your build.gradle.kts file (project-level or module-level).
+
+Correct Syntax:
+For dependencies:
+kotlin
+
+Копировать
+dependencies {
+    implementation(libs.kotlin.stdlib) // Example library from version catalog
+}
+For plugins (in module-level build.gradle.kts):
+kotlin
+
+Копировать
+plugins {
+    alias(libs.plugins.android) // Example plugin from version catalog
+}
+Common Mistake:
+If you wrote libs without proper context (e.g., libs.someDependency), ensure the dependency is defined in libs.versions.toml.
+Example error: implementation(libs.someDependency) fails if someDependency is not in libs.versions.toml.
+3. Enable Version Catalog in settings.gradle.kts
+The version catalog must be enabled in the settings.gradle.kts file.
+
+Check settings.gradle.kts:
+Open <project_root>/settings.gradle.kts.
+Ensure it includes:
+kotlin
+
+Копировать
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    versionCatalogs {
+        create("libs") {
+            from(files("gradle/libs.versions.toml"))
+        }
+    }
+}
+If missing, add the versionCatalogs block and re-sync the project.
+4. Verify Gradle Kotlin DSL Setup
+Ensure your project uses the Kotlin DSL correctly:
+Project-level build.gradle.kts should include the Gradle plugin:
+kotlin
+
+Копировать
+plugins {
+    alias(libs.plugins.android) apply false // Apply globally if needed
+}

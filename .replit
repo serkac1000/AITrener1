@@ -1,0 +1,32 @@
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Android Build"
+
+[[workflows.workflow]]
+name = "Android Build"
+author = 41724262
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "export JAVA_HOME=/nix/store/$(ls -t /nix/store | grep -m 1 'jdk17')/"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "export PATH=$JAVA_HOME/bin:$PATH"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "java -version"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "./gradlew clean"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "./gradlew build"

@@ -1,0 +1,49 @@
+Option 1: Add Gradle Tasks to Run Configurations
+Open Run Configurations:
+Go to Run > Edit Configurations in Android Studio.
+Create a New Gradle Configuration:
+Click the + icon and select Gradle.
+Name the configuration (e.g., Clean and Build).
+In the Gradle Project field, select your project.
+In the Tasks field, enter clean build to run both commands sequentially.
+Save and Run:
+Click Apply and OK.
+Run the configuration via Run > Run 'Clean and Build' or the green play button.
+Option 2: Run Shell Commands via External Tool
+If you want to run these as shell commands directly:
+
+Open External Tools:
+Go to File > Settings (or Android Studio > Preferences on macOS).
+Navigate to Tools > External Tools.
+Add a New External Tool:
+Click + to create a new tool.
+Name: Gradle Clean
+Program: ./gradlew (or full path to gradlew if needed, e.g., $ProjectFileDir$/gradlew).
+Arguments: clean.
+Working Directory: $ProjectFileDir$.
+Check Synchronize files after execution for file updates.
+Add Another Tool for Build:
+Repeat the process for Gradle Build.
+Use the same settings but set Arguments to build.
+Run the Tools:
+Right-click your project in the Project view, select External Tools, and choose Gradle Clean or Gradle Build.
+Alternatively, assign shortcuts in Settings > Keymap for quick access.
+Option 3: Add to Before Launch Tasks
+To run these commands automatically before a build:
+
+Edit Run Configuration:
+Go to Run > Edit Configurations.
+Select or create a run configuration (e.g., for your app).
+Add Gradle Tasks:
+Under Before launch, click + and select Run Gradle Task.
+Choose your project and add clean as the task.
+Repeat for build.
+Save and Run:
+Click Apply and OK.
+Running the configuration will execute clean and build before launching the app.
+Notes
+Permissions: Ensure gradlew has executable permissions (chmod +x gradlew in terminal if needed).
+Windows: Use gradlew.bat instead of ./gradlew in the command settings.
+Sync Project: After running clean, you may need to sync the project (File > Sync Project with Gradle Files).
+Terminal Alternative: You can run these commands directly in Android Studio’s terminal (./gradlew clean and ./gradlew build).
+If you encounter issues (e.g., Gradle not found), verify your Gradle setup in Settings > Build, Execution, Deployment > Build Tools > Gradle. Let me know if you need further assistance!
